@@ -1,0 +1,149 @@
+openapi: 3.0.0
+info:
+  title: API REST Jumper Chinchilla
+  descripcion: API REST del mejor juego Jumper Chinchilla
+  version: "0.1"
+
+servers:
+  - url: http://127.0.0.1:8000/
+
+paths:
+  /score:
+    get:
+      sumary: Obtiene las máximas puntuaciones de los usuarios
+      parameters:
+        - name: length
+          in: query
+          required: true
+          description: Limita el númmero de puntuaciones que van a aparecer
+          schema:
+            type: integer
+            example: 5
+      responses:
+        '200':
+          description: Todo ha salido bien y el servidor devuelve las puntuaciones máximas
+          content:
+            aplication/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    nickname:
+                      type: string
+                      example: "Alias"
+                    score:
+                      type: integer
+                      example: 300
+                    date:
+                      type: string
+                      format: date
+                      example: "2021-01-13"
+        '404':
+          description: No existen registros de puntuaciones
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorDescription:
+                    type: string
+                    example: "No se ha encontrado el usuario"
+                  description:
+                    type: string
+                    example: "Not Found"
+    post:
+      requestBody:
+        description: Se utiliza para enviar la informacion a la pagina web
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Anonimo
+                score:
+                  type: integer
+                  example: 300
+      responses:
+        '201':
+          description: Se creo la informacion correctamente en la base de datos
+        '404':
+          description: No existe información
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorDescription:
+                    type: string
+                    example: "Información incorrecta"
+                  description:
+                    type: string
+                    example: "Not Found"
+  /{nickname}/score:
+    get:
+        summary: Obtiene la información de un usuario
+        parameters:
+          - name: username
+            in: path
+            required: true
+            description: Nombre de usuario en la base de datos
+            schema:
+              type: string
+              example: "Carlos"
+        responses:
+          '200':
+            description: Todo ha salido bien
+            content:
+              aplication/json:
+                schema:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      nickname:
+                        type: string
+                        example: "Alias"
+                      score:
+                        type: integer
+                        example: 300
+                      date:
+                        type: string
+                        format: date
+                        example: "2021-01-15"
+          '400':
+            description: Algún parámetro no ha podido ser correctamente interpretado por el servidor, o la petición está mal formada
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorDescription:
+                      type: string
+                      example: "Inténtalo de nuevo o más tarde"
+          '404':
+            description: No existen registros de puntuaciones
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorDescription:
+                      type: string
+                      example: "No se ha encontrado el usuario"
+                    description:
+                      type: string
+                      example: "Not Found"
+          '500':
+            description: Error interno del servidor
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorDescription:
+                      type: string
+                      example: "Inténtalo de nuevo o más tarde"
